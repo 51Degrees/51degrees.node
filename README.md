@@ -1,8 +1,11 @@
 
-51degrees.node
+51degrees.node [![Build Status](https://travis-ci.org/yorkie/51degrees.node.svg?branch=master)](https://travis-ci.org/yorkie/51degrees.node)
 ==============
 
 51degrees c-sdk native bindings for nodejs, it help you detect devices from `userAgent` in high performance.
+
+[![NPM](https://nodei.co/npm/51degrees.node.png?stars&downloads)](https://nodei.co/npm/51degrees.node/)
+[![NPM](https://nodei.co/npm-dl/51degrees.node.png)](https://nodei.co/npm/51degrees.node/)
 
 ### API
 
