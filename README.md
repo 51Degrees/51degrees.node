@@ -1,8 +1,8 @@
 
-51degress.node
+51degrees.node
 ==============
 
-51degress c-sdk native bindings for nodejs
+51degrees c-sdk native bindings for nodejs, it help you detect devices from `userAgent` in high performance.
 
 ### API
 
