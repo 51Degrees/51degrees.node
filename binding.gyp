@@ -12,6 +12,9 @@
       "defines": [
         "HAVE_SNPRINTF"
       ],
+      "include_dirs" : [
+        "<!(node -e \"require('nan')\")"
+      ],
     },
     {
       "target_name": "trie",
@@ -24,6 +27,9 @@
       ],
       "defines": [
         "HAVE_SNPRINTF"
+      ],
+      "include_dirs" : [
+        "<!(node -e \"require('nan')\")"
       ],
     },
   ]

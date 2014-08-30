@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/yorkie/51degress.node/issues"
   },
-  "homepage": "https://github.com/yorkie/51degress.node"
+  "homepage": "https://github.com/yorkie/51degress.node",
+  "dependencies": {
+    "nan": "^1.3.0"
+  }
 }
