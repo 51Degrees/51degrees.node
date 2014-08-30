@@ -4,8 +4,8 @@
 
 51degrees c-sdk native bindings for nodejs, it help you detect devices from `userAgent` in high performance.
 
-[![NPM](https://nodei.co/npm/51degrees.node.png?stars&downloads)](https://nodei.co/npm/51degrees.node/)
-[![NPM](https://nodei.co/npm-dl/51degrees.node.png)](https://nodei.co/npm/51degrees.node/)
+[![NPM](https://nodei.co/npm/51degrees.png?stars&downloads)](https://nodei.co/npm/51degrees/)
+[![NPM](https://nodei.co/npm-dl/51degrees.png)](https://nodei.co/npm/51degrees/)
 
 ### API
 
