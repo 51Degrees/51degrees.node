@@ -33,7 +33,7 @@ var defaultOptions = {
 };
 
 exports.parse = function parse(userAgent, method, options) {
-  if (arguments.length === 2 && method !== 'string') {
+  if (arguments.length === 2 && typeof method !== 'string') {
     options = method;
     method = 'pattern';
   }
@@ -72,7 +72,7 @@ function parseText(output) {
       var lowerVal = val.toLowerCase();
       if (lowerVal === 'true')
         val = true;
-      else
+      else if (lowerVal === 'false')
         val = false;
       ret[key] = val;
     }
