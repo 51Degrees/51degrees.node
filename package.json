@@ -1,7 +1,7 @@
 {
   "name": "51degrees",
   "version": "1.0.0",
-  "description": "51degress c-sdk native bindings for nodejs",
+  "description": "51degrees c-sdk native bindings for nodejs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
