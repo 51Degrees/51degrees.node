@@ -19,12 +19,13 @@
     },
     {
       "target_name": "trie",
-      "source": [
+      "sources": [
         "src/snprintf/snprintf.c",
         "src/trie/api.c",
-        "src/trie/exports.cc",
+        "src/trie/trie.cc",
       ],
       "cflags": [
+        "-Wno-trigraphs"
       ],
       "defines": [
         "HAVE_SNPRINTF"
