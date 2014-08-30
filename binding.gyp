@@ -5,9 +5,10 @@
       "sources": [
         "src/snprintf/snprintf.c",
         "src/pattern/api.c",
-        "src/pattern/exports.cc",
+        "src/pattern/pattern.cc",
       ],
       "cflags": [
+        "-Wno-trigraphs"
       ],
       "defines": [
         "HAVE_SNPRINTF"
