@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "../pattern/51Degrees.h"
+#include "../pattern/api.h"
 
 #ifndef NULL
 #define NULL 0
