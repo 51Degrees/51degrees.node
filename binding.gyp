@@ -7,7 +7,7 @@
         "src/console/Console.c",
         "src/snprintf/snprintf.c",
         #"src/pattern/51Degress.c",
-        #"src/trie/51Degress.c",
+        "src/trie/51Degress.c",
         "src/binding.cc",
       ],
       "cflags": [
