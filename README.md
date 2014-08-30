@@ -23,10 +23,11 @@ for more information, you could move to [51degrees documentation](https://51degr
 ```js
 var parse = require('51degrees.node').parse;
 var userAgent = '...' // your userAgent in any clients(browser/ios/android)
-parse(userAgent, 'trie');
+var ret = parse(userAgent, 'trie');
+console.log(ret);
 ```
 
-After runned the above program, you will get:
+After the above program, you will get:
 
 ```js
 { animationTiming: true,
