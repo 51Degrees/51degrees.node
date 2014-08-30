@@ -1,0 +1,22 @@
+{
+  "name": "51degress.node",
+  "version": "0.0.0",
+  "description": "51degress c-sdk native bindings for nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node-gyp rebuild",
+    "build": "node-gyp configure build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:yorkie/51degress.node.git"
+  },
+  "author": "Yorkie Neil <yorkiefixer@gmail.com>",
+  "license": "MIT",
+  "gypfile": true,
+  "bugs": {
+    "url": "https://github.com/yorkie/51degress.node/issues"
+  },
+  "homepage": "https://github.com/yorkie/51degress.node"
+}
