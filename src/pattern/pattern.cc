@@ -74,7 +74,7 @@ NAN_METHOD(ParseFile) {
       ws->input = input;
       match(ws, ws->input);
       if (ws->profileCount > 0) {
-        processDeviceCSV(ws, output, BUFFER_LENGTH);
+        processDeviceJSON(ws, output, BUFFER_LENGTH);
         result->Set(NanNew<v8::String>("difference"), NanNew<v8::Integer>(ws->difference));
         result->Set(NanNew<v8::String>("method"), NanNew<v8::Integer>(ws->method));
         result->Set(NanNew<v8::String>("rootNodesEvaluated"), NanNew<v8::Integer>(ws->rootNodesEvaluated));

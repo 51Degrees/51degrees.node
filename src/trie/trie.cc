@@ -69,7 +69,7 @@ NAN_METHOD(ParseFile) {
     case DATA_SET_INIT_STATUS_FILE_NOT_FOUND:
       return NanThrowError("Device data file not found");
     default:
-      processDeviceCSV(getDeviceOffset(input), output, BUFFER_LENGTH);
+      processDeviceJSON(getDeviceOffset(input), output, BUFFER_LENGTH);
       result->Set(NanNew<v8::String>("output"), NanNew<v8::String>(output));
       break;
   }

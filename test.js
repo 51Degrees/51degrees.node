@@ -27,16 +27,23 @@ defined by the Mozilla Public License, v. 2.0.
 
 var test = require('tape');
 var parse = require('./index').parse;
+var properties = require('./index').ALL_PROPERTIES;
 var userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36';
 
 test('pattern', function(t) {
-  var ret = parse(userAgent, 'pattern');
+  var ret = parse(userAgent, 'pattern', { properties: properties });
+  properties.forEach(function(property) {
+    t.ok(typeof ret[property] !== undefined, property + '> ok');
+  });
   t.equal(ret.method, 'pattern')
   t.end();
 });
 
 test('trie', function(t) {
-  var ret = parse(userAgent, 'trie');
-  t.equal(ret.method, 'trie')
+  var ret = parse(userAgent, 'trie', { properties: properties });
+  properties.forEach(function(property) {
+    t.ok(typeof ret[property] !== undefined, property + '> ok');
+  });
+  t.equal(ret.method, 'trie');
   t.end();
 });

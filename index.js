@@ -28,8 +28,26 @@ defined by the Mozilla Public License, v. 2.0.
 var trie_node = require('./build/Release/trie.node');
 var pattern_node = require('./build/Release/pattern.node');
 var defaultOptions = {
-  filename: './51Degrees-Lite.dat',
-  properties: ''
+  filename: './51Degrees-Lite',
+  properties: [
+    'Id',
+    'Canvas',
+    'CssTransforms',
+    'CssTransitions',
+    'History',
+    'Html5',
+    'IndexedDB',
+    'IsMobile',
+    'Json',
+    'PostMessage',
+    'Svg',
+    'TouchEvents',
+    'WebWorkers'
+  ]
+};
+var extensions = {
+  'pattern': '.dat',
+  'trie': '.trie'
 };
 
 exports.parse = function parse(userAgent, method, options) {
@@ -38,48 +56,95 @@ exports.parse = function parse(userAgent, method, options) {
     method = 'pattern';
   }
   options = options || {};
+  options.filename = options.filename || defaultOptions.filename;
+  options.properties = defaultOptions.properties.concat(options.properties || []);
+
   for (var key in defaultOptions) {
     if (options[key] === undefined)
       options[key] = defaultOptions[key];
   }
   var res;
+  console.log(options.filename);
   if (method === 'pattern') {
-    res = pattern_node.parseFile(options.filename, options.properties, userAgent);
+    res = pattern_node.parseFile(options.filename + extensions.pattern, options.properties.join(','), userAgent);
     method = 'pattern';
   } else {
-    res = trie_node.parseFile('51Degrees-Lite.trie', options.properties, userAgent);
+    res = trie_node.parseFile(options.filename + extensions.trie, options.properties.join(','), userAgent);
     method = 'trie';
   }
 
   if (!res)
     return undefined;
 
-  var ret = parseText(res.output);
+  var ret = JSON.parse(res.output);
+  delete res.output;
   ret.method = method;
   ret.data = res;
-  return ret;
-}
 
-function parseText(output) {
-  if (!output || typeof output !== 'string')
-    throw new Error('output must be string');
-  var ret = {};
-  output.split('\n').forEach(function(unitText) {
-    var unit = unitText.split(',');
-    if (unit.length === 2) {
-      var key = capitaliseFirstLetter(unit[0]);
-      var val = unit[1];
-      var lowerVal = val.toLowerCase();
-      if (lowerVal === 'true')
-        val = true;
-      else if (lowerVal === 'false')
-        val = false;
-      ret[key] = val;
-    }
-  });
+  for (var k in ret) {
+    if (ret[k] === 'True')
+      ret[k] = true;
+    else if (ret[k] === 'False')
+      ret[k] = false;
+  }
   return ret;
 }
 
 function capitaliseFirstLetter(str) {
   return str.charAt(0).toLowerCase() + str.slice(1);
 }
+
+
+exports.ALL_PROPERTIES = [
+  'AnimationTiming',
+  'BlobBuilder',
+  'Canvas',
+  'CssBackground',
+  'CssBorderImage',
+  'CssCanvas',
+  'CssColor',
+  'CssColumn',
+  'CssFlexbox',
+  'CssFont',
+  'CssImages',
+  'CssMediaQueries',
+  'CssMinMax',
+  'CssOverflow',
+  'CssPosition',
+  'CssText',
+  'CssTransforms',
+  'CssTransitions',
+  'CssUI',
+  'DataSet',
+  'DataUrl',
+  'DeviceOrientation',
+  'FileReader',
+  'FileSaver',
+  'FileWriter',
+  'FormData',
+  'Fullscreen',
+  'GeoLocation',
+  'History',
+  'Html5',
+  'Html-Media-Capture',
+  'Id',
+  'Iframe',
+  'IndexedDB',
+  'IsMobile',
+  'Json',
+  'LayoutEngine',
+  'Masking',
+  'PostMessage',
+  'Progress',
+  'Prompts',
+  'ScreenPixelsHeight',
+  'ScreenPixelsWidth',
+  'Selector',
+  'Svg',
+  'TouchEvents',
+  'Track',
+  'Video',
+  'Viewport',
+  'WebWorkers',
+  'Xhr2'
+]
