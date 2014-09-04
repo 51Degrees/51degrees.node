@@ -35,7 +35,7 @@ test('pattern', function(t) {
   properties.forEach(function(property) {
     t.ok(typeof ret[property] !== undefined, property + '> ok');
   });
-  t.equal(ret.method, 'pattern')
+  t.equal(ret.method, 'pattern');
   t.end();
 });
 

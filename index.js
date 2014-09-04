@@ -77,7 +77,6 @@ exports.parse = function parse(userAgent, method, options) {
     return undefined;
 
   var ret = JSON.parse(res.output);
-  delete res.output;
   ret.method = method;
   ret.data = res;
 
@@ -93,7 +92,6 @@ exports.parse = function parse(userAgent, method, options) {
 function capitaliseFirstLetter(str) {
   return str.charAt(0).toLowerCase() + str.slice(1);
 }
-
 
 exports.ALL_PROPERTIES = [
   'AnimationTiming',
