@@ -25,6 +25,7 @@ defined by the Mozilla Public License, v. 2.0.
 
 */
 
+#include <cstdlib>
 #include <stdio.h>
 #include <string.h>
 #include <node.h>
