@@ -33,60 +33,92 @@ console.log(ret);
 After the above program, you will get:
 
 ```js
-{ animationTiming: true,
-  blobBuilder: false,
-  canvas: true,
-  cssBackground: true,
-  cssBorderImage: true,
-  cssCanvas: false,
-  cssColor: true,
-  cssColumn: false,
-  cssFlexbox: true,
-  cssFont: true,
-  cssImages: true,
-  cssMediaQueries: true,
-  cssMinMax: true,
-  cssOverflow: true,
-  cssPosition: true,
-  cssText: true,
-  cssTransforms: true,
-  cssTransitions: true,
-  cssUI: true,
-  dataSet: true,
-  dataUrl: true,
-  deviceOrientation: true,
-  fileReader: true,
-  fileSaver: false,
-  fileWriter: false,
-  formData: true,
-  fullscreen: true,
-  geoLocation: true,
-  history: true,
-  html5: true,
-  'html-Media-Capture': true,
-  id: false,
-  iframe: true,
-  indexedDB: true,
-  isMobile: false,
-  json: true,
-  layoutEngine: false,
-  masking: true,
-  postMessage: true,
-  progress: true,
-  prompts: true,
-  screenPixelsHeight: false,
-  screenPixelsWidth: false,
-  selector: true,
-  svg: true,
-  touchEvents: true,
-  track: true,
-  video: true,
-  viewport: true,
-  webWorkers: true,
-  xhr2: true,
+{ Id: '17595-21721-21635-18092',
+  Canvas: true,
+  CssTransforms: true,
+  CssTransitions: true,
+  History: true,
+  Html5: true,
+  IndexedDB: true,
+  IsMobile: false,
+  Json: true,
+  PostMessage: true,
+  Svg: true,
+  TouchEvents: true,
+  WebWorkers: true,
   method: 'trie',
-  data: { output: 'AnimationTiming,True\nBlobBuilder,Unknown\nCanvas,True\nCssBackground,True\nCssBorderImage,True\nCssCanvas,Unknown\nCssColor,True\nCssColumn,Unknown\nCssFlexbox,True\nCssFont,True\nCssImages,True\nCssMediaQueries,True\nCssMinMax,True\nCssOverflow,True\nCssPosition,True\nCssText,True\nCssTransforms,True\nCssTransitions,True\nCssUI,True\nDataSet,True\nDataUrl,True\nDeviceOrientation,True\nFileReader,True\nFileSaver,Unknown\nFileWriter,Unknown\nFormData,True\nFullscreen,True\nGeoLocation,True\nHistory,True\nHtml5,True\nHtml-Media-Capture,True\nId,17595-21721-21635-18092\nIframe,True\nIndexedDB,True\nIsMobile,False\nJson,True\nLayoutEngine,Webkit\nMasking,True\nPostMessage,True\nProgress,True\nPrompts,True\nScreenPixelsHeight,Unknown\nScreenPixelsWidth,Unknown\nSelector,True\nSvg,True\nTouchEvents,True\nTrack,True\nVideo,True\nViewport,True\nWebWorkers,True\nXhr2,True\n' } }
+  data: {} }
 ```
+
+##### `.ALL_PROPERTIES`
+
+`51Degrees.node` exposure `ALL_PROPERTIES` to shortly fetch all propertites from `userAgent`, just using like this:
+
+```js
+var parse = require('51degrees').parse;
+var properties = require('51degrees').ALL_PROPERTIES;
+var userAgent = '...' // your userAgent in any clients(browser/ios/android)
+var ret = parse(userAgent, 'trie', {properties: properties});
+console.log(ret);
+```
+
+Then will prints the whole properties, it's super useful for overview of this module and 51Degrees product.
+
+##### Properties
+
+The following list shows all properties that 51degrees would export in json:
+
+* `AnimationTiming`
+* `BlobBuilder`
+* `Canvas`
+* `CssBackground`
+* `CssBorderImage`
+* `CssCanvas`
+* `CssColor`
+* `CssColumn`
+* `CssFlexbox`
+* `CssFont`
+* `CssImages`
+* `CssMediaQueries`
+* `CssMinMax`
+* `CssOverflow`
+* `CssPosition`
+* `CssText`
+* `CssTransforms`
+* `CssTransitions`
+* `CssUI`
+* `DataSet`
+* `DataUrl`
+* `DeviceOrientation`
+* `FileReader`
+* `FileSaver`
+* `FileWriter`
+* `FormData`
+* `Fullscreen`
+* `GeoLocation`
+* `History`
+* `Html5`
+* `Html-Media-Capture`
+* `Id`
+* `Iframe`
+* `IndexedDB`
+* `IsMobile`
+* `Json`
+* `LayoutEngine`
+* `Masking`
+* `PostMessage`
+* `Progress`
+* `Prompts`
+* `ScreenPixelsHeight`
+* `ScreenPixelsWidth`
+* `Selector`
+* `Svg`
+* `TouchEvents`
+* `Track`
+* `Video`
+* `Viewport`
+* `WebWorkers`
+* `Xhr`
 
 ### Installation
 

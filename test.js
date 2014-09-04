@@ -40,7 +40,7 @@ test('pattern', function(t) {
 });
 
 test('trie', function(t) {
-  var ret = parse(userAgent, 'trie', { properties: properties });
+  var ret = parse(userAgent, 'trie');
   properties.forEach(function(property) {
     t.ok(typeof ret[property] !== undefined, property + '> ok');
   });
