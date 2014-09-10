@@ -24,7 +24,7 @@ for more information, you could move to [51degrees documentation](https://51degr
 ### Usage
 
 ```js
-var parse = require('51degrees.node').parse;
+var parse = require('51degrees').parse;
 var userAgent = '...' // your userAgent in any clients(browser/ios/android)
 var ret = parse(userAgent, 'trie');
 console.log(ret);
