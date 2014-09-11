@@ -25,27 +25,35 @@ defined by the Mozilla Public License, v. 2.0.
 
 */
 
-var test = require('tape');
-var Parser = require('./index').Parser;
-var properties = require('./index').ALL_PROPERTIES;
-var userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36';
+#ifndef MYOBJECT_H
+#define MYOBJECT_H
 
-test('pattern', function(t) {
-  var parser = new Parser('pattern', {properties: properties});
-  var ret = parser.parse(userAgent);
-  properties.forEach(function(property) {
-    t.ok(typeof ret[property] !== undefined, property + '> ok');
-  });
-  t.equal(ret.method, 'pattern');
-  t.end();
-});
+#include <node.h>
+#include <v8.h>
+#include <nan.h>
+#include "api.h"
 
-test('trie', function(t) {
-  var parser = new Parser('trie', {properties: properties});
-  var ret = parser.parse(userAgent);
-  properties.forEach(function(property) {
-    t.ok(typeof ret[property] !== undefined, property + '> ok');
-  });
-  t.equal(ret.method, 'trie');
-  t.end();
-});
+#define BUFFER_LENGTH 50000
+
+#ifdef _MSC_VER
+#define _INTPTR 0
+#endif
+
+using namespace v8;
+using namespace node;
+
+class PatternParser : public ObjectWrap {
+public:
+  PatternParser(char * filename, char * required_properties);
+  ~PatternParser();
+
+  static void Init(Handle<Object> target);
+  static NAN_METHOD(New);
+  static NAN_METHOD(Parse);
+
+private:
+  int init_result;
+  DataSet *data_set;
+};
+
+#endif

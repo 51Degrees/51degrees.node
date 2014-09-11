@@ -31,7 +31,7 @@ defined by the Mozilla Public License, v. 2.0.
 #include <node.h>
 #include <v8.h>
 #include <nan.h>
-#include "api.h"
+#include "pattern.h"
 
 #define BUFFER_LENGTH 50000
 
@@ -41,27 +41,36 @@ defined by the Mozilla Public License, v. 2.0.
 
 using namespace v8;
 
-NAN_METHOD(ParseFile) {
+PatternParser::PatternParser(char * filename, char * required_properties) {
+  data_set = (DataSet *) malloc(sizeof(DataSet));
+  init_result = initWithPropertyString(filename, data_set, required_properties);
+}
+
+PatternParser::~PatternParser() {
+}
+
+void PatternParser::Init(Handle<Object> target) {
   NanScope();
-  Local<v8::Object> result = NanNew<v8::Object>();
-  Workset *ws = NULL;
-  DataSet *data_set = (DataSet *) malloc(sizeof(DataSet));
-  char output[BUFFER_LENGTH];
+  Local<FunctionTemplate> t = NanNew<FunctionTemplate>(New);
+  t->InstanceTemplate()->SetInternalFieldCount(1);
+  NODE_SET_PROTOTYPE_METHOD(t, "parse", Parse);
+  target->Set(NanNew<v8::String>("PatternParser"), t->GetFunction());
+}
+
+NAN_METHOD(PatternParser::New) {
+  NanScope();
   char *filename;
   char *required_properties;
-  char *input;
-
-  if (args[0]->IsUndefined())
-    return NanThrowTypeError("filename required");
 
   v8::String::Utf8Value v8_filename(args[0]->ToString());
   v8::String::Utf8Value v8_properties(args[1]->ToString());
-  v8::String::Utf8Value v8_input(args[2]->ToString());
   filename = *v8_filename;
   required_properties = *v8_properties;
-  input = *v8_input;
 
-  switch(initWithPropertyString(filename, data_set, required_properties)) {
+  PatternParser *parser = new PatternParser(filename, required_properties);
+  parser->Wrap(args.This());
+
+  switch(parser->init_result) {
     case DATA_SET_INIT_STATUS_INSUFFICIENT_MEMORY:
       return NanThrowError("Insufficient memory");
     case DATA_SET_INIT_STATUS_CORRUPT_DATA:
@@ -71,35 +80,43 @@ NAN_METHOD(ParseFile) {
     case DATA_SET_INIT_STATUS_FILE_NOT_FOUND:
       return NanThrowError("Device data file not found");
     default:
-      ws = createWorkset(data_set);
-      ws->input = input;
-      match(ws, ws->input);
-      if (ws->profileCount > 0) {
-        processDeviceJSON(ws, output, BUFFER_LENGTH);
-        result->Set(NanNew<v8::String>("difference"), NanNew<v8::Integer>(ws->difference));
-        result->Set(NanNew<v8::String>("method"), NanNew<v8::Integer>(ws->method));
-        result->Set(NanNew<v8::String>("rootNodesEvaluated"), NanNew<v8::Integer>(ws->rootNodesEvaluated));
-        result->Set(NanNew<v8::String>("nodesEvaluated"), NanNew<v8::Integer>(ws->nodesEvaluated));
-        result->Set(NanNew<v8::String>("stringsRead"), NanNew<v8::Integer>(ws->stringsRead));
-        result->Set(NanNew<v8::String>("signaturesRead"), NanNew<v8::Integer>(ws->signaturesRead));
-        result->Set(NanNew<v8::String>("signaturesCompared"), NanNew<v8::Integer>(ws->signaturesCompared));
-        result->Set(NanNew<v8::String>("closestSignatures"), NanNew<v8::Integer>(ws->closestSignatures));
-        result->Set(NanNew<v8::String>("output"), NanNew<v8::String>(output));
-        // XXX: call without error
-        // freeWorkset(ws);
-      } else {
-        printf("null\n");
-      }
-      destroy(data_set);
-      break;
+      NanReturnValue(args.This());
   }
+}
 
+NAN_METHOD(PatternParser::Parse) {
+  NanScope();
+
+  PatternParser *parser = ObjectWrap::Unwrap<PatternParser>(args.This());
+
+  char output[BUFFER_LENGTH];
+  char *input = NULL;
+  
+  Local<Object> result = NanNew<Object>();
+  v8::String::Utf8Value v8_input(args[0]->ToString());
+  input = *v8_input;
+
+  Workset *ws = createWorkset(parser->data_set);
+  ws->input = input;
+  match(ws, ws->input);
+  if (ws->profileCount > 0) {
+    processDeviceJSON(ws, output, BUFFER_LENGTH);
+    result->Set(NanNew<v8::String>("difference"), NanNew<v8::Integer>(ws->difference));
+    result->Set(NanNew<v8::String>("method"), NanNew<v8::Integer>(ws->method));
+    result->Set(NanNew<v8::String>("rootNodesEvaluated"), NanNew<v8::Integer>(ws->rootNodesEvaluated));
+    result->Set(NanNew<v8::String>("nodesEvaluated"), NanNew<v8::Integer>(ws->nodesEvaluated));
+    result->Set(NanNew<v8::String>("stringsRead"), NanNew<v8::Integer>(ws->stringsRead));
+    result->Set(NanNew<v8::String>("signaturesRead"), NanNew<v8::Integer>(ws->signaturesRead));
+    result->Set(NanNew<v8::String>("signaturesCompared"), NanNew<v8::Integer>(ws->signaturesCompared));
+    result->Set(NanNew<v8::String>("closestSignatures"), NanNew<v8::Integer>(ws->closestSignatures));
+    result->Set(NanNew<v8::String>("output"), NanNew<v8::String>(output));
+    // XXX: call without error
+    // freeWorkset(ws);
+  } else {
+    printf("null\n");
+  }
   NanReturnValue(result);
 }
 
-void Init(Handle<v8::Object> exports) {
-  exports->Set(NanNew<v8::String>("parseFile"),
-    NanNew<FunctionTemplate>(ParseFile)->GetFunction());
-}
 
-NODE_MODULE(pattern, Init)
+NODE_MODULE(pattern, PatternParser::Init)

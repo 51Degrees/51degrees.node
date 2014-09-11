@@ -25,8 +25,9 @@ defined by the Mozilla Public License, v. 2.0.
 
 */
 
-var trie_node = require('./build/Release/trie.node');
-var pattern_node = require('./build/Release/pattern.node');
+var util = require('util');
+var TrieParser = require('./build/Release/trie.node').TrieParser;
+var PatternParser = require('./build/Release/pattern.node').PatternParser;
 var defaultOptions = {
   filename: './51Degrees-Lite',
   properties: [
@@ -50,8 +51,11 @@ var extensions = {
   'trie': '.trie'
 };
 
-exports.parse = function parse(userAgent, method, options) {
-  if (arguments.length === 2 && typeof method !== 'string') {
+function Parser(method, options) {
+  if (!(this instanceof Parser)) {
+    return new Parser(method, options);
+  }
+  if (arguments.length === 1 && typeof method !== 'string') {
     options = method;
     method = 'pattern';
   }
@@ -63,21 +67,26 @@ exports.parse = function parse(userAgent, method, options) {
     if (options[key] === undefined)
       options[key] = defaultOptions[key];
   }
-  var res;
-  console.log(options.filename);
-  if (method === 'pattern') {
-    res = pattern_node.parseFile(options.filename + extensions.pattern, options.properties.join(','), userAgent);
-    method = 'pattern';
-  } else {
-    res = trie_node.parseFile(options.filename + extensions.trie, options.properties.join(','), userAgent);
-    method = 'trie';
-  }
 
+  this._properties = options.properties;
+  if (method === 'pattern') {
+    this.method = 'pattern';
+    this._filename = options.filename + extensions['pattern'];
+    this._parser = new PatternParser(this._filename, this._properties.join(','));
+  } else {
+    this.method = 'trie';
+    this._filename = options.filename + extensions['trie'];
+    this._parser = new TrieParser(this._filename, this._properties.join(','));
+  }
+}
+
+Parser.prototype.parse = function(userAgent) {
+  var res = this._parser.parse(userAgent);
   if (!res)
     return undefined;
 
   var ret = JSON.parse(res.output);
-  ret.method = method;
+  ret.method = this.method;
   ret.data = res;
 
   for (var k in ret) {
@@ -92,6 +101,8 @@ exports.parse = function parse(userAgent, method, options) {
 function capitaliseFirstLetter(str) {
   return str.charAt(0).toLowerCase() + str.slice(1);
 }
+
+exports.Parser = Parser;
 
 exports.ALL_PROPERTIES = [
   'AnimationTiming',
