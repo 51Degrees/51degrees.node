@@ -9,7 +9,7 @@
 
 ### API
 
-##### `.parse(userAgent[, method, options])`
+##### `.Parse([method, options])`
 
 * `method` must be one of `pattern` and `trie`, default value is: `pattern`.
 
@@ -21,12 +21,17 @@
 
 for more information, you could move to [51degrees documentation](https://51degrees.com/Support/Documentation)
 
+##### `parser.parse(userAgent)`
+
+parse the `userAgent` given by you, and return result of that.
+
 ### Usage
 
 ```js
-var parse = require('51degrees').parse;
-var userAgent = '...' // your userAgent in any clients(browser/ios/android)
-var ret = parse(userAgent, 'trie');
+var Parser = require('51degrees').Parser;
+var psr = new Parser('trie');
+var userAgent = '...'; // your userAgent in any clients(browser/ios/android)
+var ret = psr.parse(userAgent);
 console.log(ret);
 ```
 
@@ -55,10 +60,10 @@ After the above program, you will get:
 `51Degrees.node` exposure `ALL_PROPERTIES` to shortly fetch all propertites from `userAgent`, just using like this:
 
 ```js
-var parse = require('51degrees').parse;
 var properties = require('51degrees').ALL_PROPERTIES;
 var userAgent = '...' // your userAgent in any clients(browser/ios/android)
-var ret = parse(userAgent, 'trie', {properties: properties});
+var psr = new Parser('trie', {properties: properties});
+var ret = psr.parse(userAgent);
 console.log(ret);
 ```
 
