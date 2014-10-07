@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:yorkie/51degress.node.git"
+    "url": "git@github.com:yorkie/51degrees.node.git"
   },
   "author": "Yorkie Neil <yorkiefixer@gmail.com>",
   "license": "MIT",
   "gypfile": true,
   "bugs": {
-    "url": "https://github.com/yorkie/51degress.node/issues"
+    "url": "https://github.com/yorkie/51degrees.node/issues"
   },
-  "homepage": "https://github.com/yorkie/51degress.node",
+  "homepage": "https://github.com/yorkie/51degrees.node",
   "dependencies": {
     "nan": "^1.3.0"
   },
