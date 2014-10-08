@@ -509,6 +509,22 @@ char* getValue(int deviceOffset, int propertyIndex) {
     return getValueFromDevice(_devices + deviceOffset, propertyIndex);
 }
 
+int32_t* getDevices() {
+  return _devices;
+}
+
+int getRequiredPropertiesCount() {
+  return _requiredPropertiesCount;
+}
+
+uint32_t* getRequiredProperties() {
+  return _requiredProperties;
+}
+
+char ** getRequiredPropertiesNames() {
+  return _requiredPropertiesNames;
+}
+
 // Process device properties into a CSV string.
 int processDeviceCSV(int32_t deviceOffset, char* result, int resultLength) {
 	char* currentPos = result;

@@ -49,6 +49,13 @@ EXTERNAL char* getValue(int deviceOffset, int propertyIndex);
 // Fress the memory.
 EXTERNAL void destroy();
 
+// XXX(Yorkie): will request 51degrees c library
+EXTERNAL char* getValueFromDevice(int32_t* device, int32_t propertyIndex);
+EXTERNAL int32_t* getDevices();
+EXTERNAL int getRequiredPropertiesCount();
+EXTERNAL uint32_t* getRequiredProperties();
+EXTERNAL char ** getRequiredPropertiesNames();
+
 // Converts the device offset to a CSV string returning the number of
 // characters used.
 EXTERNAL int processDeviceCSV(int deviceOffset, char* result, int resultLength);

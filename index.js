@@ -82,20 +82,9 @@ function Parser(method, options) {
 
 Parser.prototype.parse = function(userAgent) {
   var res = this._parser.parse(userAgent);
-  if (!res)
-    return undefined;
-
-  var ret = JSON.parse(res.output);
-  ret.method = this.method;
-  ret.data = res;
-
-  for (var k in ret) {
-    if (ret[k] === 'True')
-      ret[k] = true;
-    else if (ret[k] === 'False')
-      ret[k] = false;
-  }
-  return ret;
+  if (!res) return undefined;
+  res.method = this.method;
+  return res;
 }
 
 function capitaliseFirstLetter(str) {

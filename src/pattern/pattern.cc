@@ -100,16 +100,59 @@ NAN_METHOD(PatternParser::Parse) {
   ws->input = input;
   match(ws, ws->input);
   if (ws->profileCount > 0) {
-    processDeviceJSON(ws, output, BUFFER_LENGTH);
-    result->Set(NanNew<v8::String>("difference"), NanNew<v8::Integer>(ws->difference));
-    result->Set(NanNew<v8::String>("method"), NanNew<v8::Integer>(ws->method));
-    result->Set(NanNew<v8::String>("rootNodesEvaluated"), NanNew<v8::Integer>(ws->rootNodesEvaluated));
-    result->Set(NanNew<v8::String>("nodesEvaluated"), NanNew<v8::Integer>(ws->nodesEvaluated));
-    result->Set(NanNew<v8::String>("stringsRead"), NanNew<v8::Integer>(ws->stringsRead));
-    result->Set(NanNew<v8::String>("signaturesRead"), NanNew<v8::Integer>(ws->signaturesRead));
-    result->Set(NanNew<v8::String>("signaturesCompared"), NanNew<v8::Integer>(ws->signaturesCompared));
-    result->Set(NanNew<v8::String>("closestSignatures"), NanNew<v8::Integer>(ws->closestSignatures));
-    result->Set(NanNew<v8::String>("output"), NanNew<v8::String>(output));
+
+    // build json
+    int32_t propertyIndex, valueIndex, profileIndex;
+    int idSize = ws->profileCount * 5 + (ws->profileCount - 1) + 1;
+    char ids[idSize];
+    char *pos = ids;
+    for (profileIndex = 0; profileIndex < ws->profileCount; profileIndex++) {
+      if (profileIndex < ws->profileCount - 1)
+        pos += snprintf(pos, idSize, "%d-", (*(ws->profiles + profileIndex))->profileId);
+      else
+        pos += snprintf(pos, idSize, "%d", (*(ws->profiles + profileIndex))->profileId);
+    }
+    result->Set(NanNew<v8::String>("Id"), NanNew<v8::String>(ids));
+
+    for (propertyIndex = 0; 
+      propertyIndex < ws->dataSet->requiredPropertyCount; 
+      propertyIndex++) {
+
+      if (setValues(ws, propertyIndex) <= 0)
+        break;
+
+      const char *key = getPropertyName(ws->dataSet, 
+        *(ws->dataSet->requiredProperties + propertyIndex));
+
+      if (ws->valuesCount == 1) {
+        const char *val = getValueName(ws->dataSet, *(ws->values));
+        if (strcmp(val, "True") == 0)
+          result->Set(NanNew<v8::String>(key), NanTrue());
+        else if (strcmp(val, "False") == 0)
+          result->Set(NanNew<v8::String>(key), NanFalse());
+        else
+          result->Set(NanNew<v8::String>(key), NanNew<v8::String>(val));
+      } else {
+        Local<Array> vals = NanNew<Array>(ws->valuesCount - 1);
+        for (valueIndex = 0; valueIndex < ws->valuesCount; valueIndex++) {
+          const char *val = getValueName(ws->dataSet, *(ws->values + valueIndex));
+          vals->Set(valueIndex, NanNew<v8::String>(val));
+        }
+        result->Set(NanNew<v8::String>(key), vals);
+      }
+    }
+
+    Local<Object> meta = NanNew<Object>();
+    meta->Set(NanNew<v8::String>("difference"), NanNew<v8::Integer>(ws->difference));
+    meta->Set(NanNew<v8::String>("method"), NanNew<v8::Integer>(ws->method));
+    meta->Set(NanNew<v8::String>("rootNodesEvaluated"), NanNew<v8::Integer>(ws->rootNodesEvaluated));
+    meta->Set(NanNew<v8::String>("nodesEvaluated"), NanNew<v8::Integer>(ws->nodesEvaluated));
+    meta->Set(NanNew<v8::String>("stringsRead"), NanNew<v8::Integer>(ws->stringsRead));
+    meta->Set(NanNew<v8::String>("signaturesRead"), NanNew<v8::Integer>(ws->signaturesRead));
+    meta->Set(NanNew<v8::String>("signaturesCompared"), NanNew<v8::Integer>(ws->signaturesCompared));
+    meta->Set(NanNew<v8::String>("closestSignatures"), NanNew<v8::Integer>(ws->closestSignatures));
+    result->Set(NanNew<v8::String>("__meta__"), meta);
+
     // XXX: call without error
     // freeWorkset(ws);
   } else {
