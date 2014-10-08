@@ -13,7 +13,7 @@
     "url": "git@github.com:yorkie/51degrees.node.git"
   },
   "author": "Yorkie Neil <yorkiefixer@gmail.com>",
-  "license": "MIT",
+  "license": "MPL",
   "gypfile": true,
   "bugs": {
     "url": "https://github.com/yorkie/51degrees.node/issues"
