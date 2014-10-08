@@ -2,7 +2,7 @@
 51degrees.node [![Build Status](https://travis-ci.org/yorkie/51degrees.node.svg?branch=master)](https://travis-ci.org/yorkie/51degrees.node)
 ==============
 
-51degrees c-sdk native bindings for nodejs, it help you detect devices from `userAgent` in high performance.
+51degrees c-sdk native bindings for nodejs, it helps you detect devices from `userAgent` in high performance.
 
 [![NPM](https://nodei.co/npm/51degrees.png?stars&downloads)](https://nodei.co/npm/51degrees/)
 [![NPM](https://nodei.co/npm-dl/51degrees.png)](https://nodei.co/npm/51degrees/)
@@ -67,7 +67,7 @@ var ret = psr.parse(userAgent);
 console.log(ret);
 ```
 
-Then will prints the whole properties, it's super useful for overview of this module and 51Degrees product.
+Then will print the whole properties, it's super useful for overview of this module and 51Degrees product.
 
 ##### Properties
 
