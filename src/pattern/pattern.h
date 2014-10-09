@@ -39,6 +39,10 @@ defined by the Mozilla Public License, v. 2.0.
 #define _INTPTR 0
 #endif
 
+#ifdef _MSC_FULL_VER
+#define snprintf _snprintf
+#endif
+
 using namespace v8;
 using namespace node;
 

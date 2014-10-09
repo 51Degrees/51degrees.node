@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
-    "install": "node-gyp rebuild",
-    "build": "node-gyp configure build"
+    "install": "node-gyp rebuild --msvs_version=2012",
+    "build": "node-gyp configure --msvs_version=2012 && node-gyp build"
   },
   "repository": {
     "type": "git",

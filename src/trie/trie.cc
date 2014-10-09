@@ -79,15 +79,13 @@ NAN_METHOD(TrieParser::New) {
 NAN_METHOD(TrieParser::Parse) {
   NanScope();
 
-  char output[BUFFER_LENGTH];
   char *input = NULL;
-  
   Local<Object> result = NanNew<Object>();
   v8::String::Utf8Value v8_input(args[0]->ToString());
   input = *v8_input;
   
-  uint32_t index;
   int32_t* device = getDevices() + getDeviceOffset(input);
+  int index;
   int propCount = getRequiredPropertiesCount();
   uint32_t *props = getRequiredProperties();
   char **propNames = getRequiredPropertiesNames();

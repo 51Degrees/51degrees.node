@@ -89,9 +89,7 @@ NAN_METHOD(PatternParser::Parse) {
 
   PatternParser *parser = ObjectWrap::Unwrap<PatternParser>(args.This());
 
-  char output[BUFFER_LENGTH];
-  char *input = NULL;
-  
+  char *input = NULL;  
   Local<Object> result = NanNew<Object>();
   v8::String::Utf8Value v8_input(args[0]->ToString());
 
@@ -109,7 +107,7 @@ NAN_METHOD(PatternParser::Parse) {
     // build json
     int32_t propertyIndex, valueIndex, profileIndex;
     int idSize = ws->profileCount * 5 + (ws->profileCount - 1) + 1;
-    char ids[idSize];
+    char *ids = (char*) malloc(idSize);
     char *pos = ids;
     for (profileIndex = 0; profileIndex < ws->profileCount; profileIndex++) {
       if (profileIndex < ws->profileCount - 1)
@@ -118,6 +116,7 @@ NAN_METHOD(PatternParser::Parse) {
         pos += snprintf(pos, idSize, "%d", (*(ws->profiles + profileIndex))->profileId);
     }
     result->Set(NanNew<v8::String>("Id"), NanNew<v8::String>(ids));
+    free(ids);
 
     for (propertyIndex = 0; 
       propertyIndex < ws->dataSet->requiredPropertyCount; 
