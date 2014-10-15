@@ -88,18 +88,11 @@ NAN_METHOD(PatternParser::Parse) {
   NanScope();
 
   PatternParser *parser = ObjectWrap::Unwrap<PatternParser>(args.This());
-
-  char *input = NULL;  
   Local<Object> result = NanNew<Object>();
   v8::String::Utf8Value v8_input(args[0]->ToString());
 
-  // XXX(Yorkie): force use malloc, maybe freeWorkset don't need to free input,
-  // will discuss with mike
-  input = (char*) malloc(strlen(*v8_input));
-  memcpy(input, *v8_input, strlen(*v8_input));
-
   Workset *ws = createWorkset(parser->data_set);
-  ws->input = input;
+  memcpy(ws->input, *v8_input, strlen(*v8_input));
   match(ws, ws->input);
 
   if (ws->profileCount > 0) {
@@ -156,10 +149,10 @@ NAN_METHOD(PatternParser::Parse) {
     meta->Set(NanNew<v8::String>("signaturesCompared"), NanNew<v8::Integer>(ws->signaturesCompared));
     meta->Set(NanNew<v8::String>("closestSignatures"), NanNew<v8::Integer>(ws->closestSignatures));
     result->Set(NanNew<v8::String>("__meta__"), meta);
-    freeWorkset(ws);
   } else {
     printf("null\n");
   }
+  freeWorkset(ws);
   NanReturnValue(result);
 }
 
