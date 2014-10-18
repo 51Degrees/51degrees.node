@@ -26,57 +26,57 @@ defined by the Mozilla Public License, v. 2.0.
 */
 
 var util = require('util');
+var path = require('path');
 var TrieParser = require('./build/Release/trie.node').TrieParser;
 var PatternParser = require('./build/Release/pattern.node').PatternParser;
-var defaultOptions = {
-  filename: './51Degrees-Lite',
-  properties: [
-    'Id',
-    'Canvas',
-    'CssTransforms',
-    'CssTransitions',
-    'History',
-    'Html5',
-    'IndexedDB',
-    'IsMobile',
-    'Json',
-    'PostMessage',
-    'Svg',
-    'TouchEvents',
-    'WebWorkers'
-  ]
-};
+var defaultProperties = [
+  'Id',
+  'Canvas',
+  'CssTransforms',
+  'CssTransitions',
+  'History',
+  'Html5',
+  'IndexedDB',
+  'IsMobile',
+  'Json',
+  'PostMessage',
+  'Svg',
+  'TouchEvents',
+  'WebWorkers'
+];
 var extensions = {
   'pattern': '.dat',
   'trie': '.trie'
 };
 
-function Parser(method, options) {
-  if (!(this instanceof Parser)) {
-    return new Parser(method, options);
-  }
-  if (arguments.length === 1 && typeof method !== 'string') {
-    options = method;
-    method = 'pattern';
-  }
-  options = options || {};
-  options.filename = options.filename || defaultOptions.filename;
-  options.properties = defaultOptions.properties.concat(options.properties || []);
+function Parser(filename, properties) {
+  if (!(this instanceof Parser))
+    return new Parser(name, options);
+  
+  if (typeof filename !== 'string')
+    throw new Error('data filename required');
 
-  for (var key in defaultOptions) {
-    if (options[key] === undefined)
-      options[key] = defaultOptions[key];
-  }
+  if (filename === 'pattern' || filename === 'trie')
+    throw new Error('please use 1.2.x, if you want to use >= 1.3.x, check api at https://github.com/yorkie/51degrees.node');
 
-  this._properties = options.properties;
-  if (method === 'pattern') {
-    this.method = 'pattern';
-    this._filename = options.filename + extensions['pattern'];
-    this._parser = new PatternParser(this._filename, this._properties.join(','));
-  } else {
+  if (!properties || properties.length === 0)
+    properties = properties || defaultProperties;
+
+  if (!util.isArray(properties))
+    throw new Error('properties must be an array');
+
+  var extname = path.extname(filename);
+  if (extname === '.trie') {
     this.method = 'trie';
-    this._filename = options.filename + extensions['trie'];
-    this._parser = new TrieParser(this._filename, this._properties.join(','));
+    this._parser = new TrieParser(filename, properties.join(','));
+  } else if (extname === '.dat') {
+    this.method = 'pattern';
+    this._parser = new PatternParser(filename, properties.join(','));
+  } else if (extname === '') {
+    this.method = 'pattern';
+    this._parser = new PatternParser(filename + '.dat', properties.join(','));
+  } else {
+    throw new Error('could not find data file: ' + filename);
   }
 }
 
@@ -92,7 +92,6 @@ function capitaliseFirstLetter(str) {
 }
 
 exports.Parser = Parser;
-
 exports.ALL_PROPERTIES = [
   'AnimationTiming',
   'BlobBuilder',

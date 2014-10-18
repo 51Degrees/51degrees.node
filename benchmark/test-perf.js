@@ -1,6 +1,6 @@
 var Parser = require('../index').Parser;
 var trieParser = new Parser('trie');
-var patternParser = new Parser('pattern');
+var patternParser = new Parser('51Degrees-Lite.dat');
 var csv = require('csv');
 var fs = require("fs");
 var path = require('path');

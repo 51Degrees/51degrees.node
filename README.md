@@ -9,19 +9,17 @@
 
 ### API
 
-##### `.Parse([method, options])`
+##### `.Parse(filename[, properties])`
 
-* `method` must be one of `pattern` and `trie`, default value is: `pattern`.
+* `filename` {String} your 51degrees data, lite or premium.
 
-* `options` must be an object
-
-* `options.filename`: your 51degrees data, lite or premium
-
-* `options.properties`: required properties
+* `options` {Array} optional, required properties
 
 for more information, you could move to [51degrees documentation](https://51degrees.com/Support/Documentation)
 
 ##### `parser.parse(userAgent)`
+
+* `userAgent` {String}
 
 parse the `userAgent` given by you, and return result of that.
 
@@ -29,7 +27,7 @@ parse the `userAgent` given by you, and return result of that.
 
 ```js
 var Parser = require('51degrees').Parser;
-var psr = new Parser('trie');
+var psr = new Parser('51Degrees-Lite.dat');
 var userAgent = '...'; // your userAgent in any clients(browser/ios/android)
 var ret = psr.parse(userAgent);
 console.log(ret);
@@ -62,7 +60,7 @@ After the above program, you will get:
 ```js
 var properties = require('51degrees').ALL_PROPERTIES;
 var userAgent = '...' // your userAgent in any clients(browser/ios/android)
-var psr = new Parser('trie', {properties: properties});
+var psr = new Parser('51Degrees-Lite.trie', properties);
 var ret = psr.parse(userAgent);
 console.log(ret);
 ```
