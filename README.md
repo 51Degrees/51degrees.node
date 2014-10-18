@@ -1,5 +1,5 @@
 
-51degrees.node [![Build Status](https://travis-ci.org/yorkie/51degrees.node.svg?branch=master)](https://travis-ci.org/yorkie/51degrees.node)
+51degrees.node
 ==============
 
 51degrees c-sdk native bindings for nodejs, it helps you detect devices from `userAgent` in high performance.
