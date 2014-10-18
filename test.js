@@ -40,6 +40,21 @@ test('pattern', function(t) {
   t.end();
 });
 
+test('pattern overflow', function(t) {
+  var ua = new Buffer(1000);
+  for (var i=0; i<1000; i++) {
+    ua[i] = 50;
+  }
+  var parser = new Parser('pattern', {properties: properties});
+  var throwed = false;
+  try { parser.parse(ua); }
+  catch (e) {
+    throwed = true;
+  }
+  t.equal(throwed, true);
+  t.end();
+});
+
 test('trie', function(t) {
   var parser = new Parser('trie', {properties: properties});
   var ret = parser.parse(userAgent);
