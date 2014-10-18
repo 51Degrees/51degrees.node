@@ -145,4 +145,4 @@ exports.ALL_PROPERTIES = [
   'Viewport',
   'WebWorkers',
   'Xhr2'
-]
+];
