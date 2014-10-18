@@ -57,10 +57,9 @@ public:
 
 private:
   int result;
+  uint maxInputLength;
   DataSet *dataSet;
   Workset *workSet;
-
-  uint maxInputLength;
 };
 
 #endif

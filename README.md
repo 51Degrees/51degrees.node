@@ -7,6 +7,11 @@
 [![NPM](https://nodei.co/npm/51degrees.png?stars&downloads)](https://nodei.co/npm/51degrees/)
 [![NPM](https://nodei.co/npm-dl/51degrees.png)](https://nodei.co/npm/51degrees/)
 
+Windows        | Mac/Linux   
+-------------- | ------------
+[![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat) | [![Build status](https://ci.appveyor.com/api/projects/status/m1nwwmospqiipyeu?svg=true)](https://ci.appveyor.com/project/yorkie/51degrees-node)
+
+
 ### API
 
 ##### `.Parse(filename[, properties])`
