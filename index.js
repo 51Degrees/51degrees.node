@@ -56,6 +56,9 @@ function Parser(filename, properties) {
   if (typeof filename !== 'string')
     throw new Error('data filename required');
 
+  if (filename === 'pattern' || filename === 'trie')
+    throw new Error('please use 1.2.x, if you want to use >= 1.3.x, check api at https://github.com/yorkie/51degrees.node');
+
   if (!properties || properties.length === 0)
     properties = properties || defaultProperties;
 
