@@ -30,19 +30,19 @@ var path = require('path');
 var TrieParser = require('./build/Release/trie.node').TrieParser;
 var PatternParser = require('./build/Release/pattern.node').PatternParser;
 var defaultProperties = [
-    'Id',
-    'Canvas',
-    'CssTransforms',
-    'CssTransitions',
-    'History',
-    'Html5',
-    'IndexedDB',
-    'IsMobile',
-    'Json',
-    'PostMessage',
-    'Svg',
-    'TouchEvents',
-    'WebWorkers'
+  'Id',
+  'Canvas',
+  'CssTransforms',
+  'CssTransitions',
+  'History',
+  'Html5',
+  'IndexedDB',
+  'IsMobile',
+  'Json',
+  'PostMessage',
+  'Svg',
+  'TouchEvents',
+  'WebWorkers'
 ];
 var extensions = {
   'pattern': '.dat',
