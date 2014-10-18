@@ -41,12 +41,18 @@ defined by the Mozilla Public License, v. 2.0.
 
 using namespace v8;
 
-PatternParser::PatternParser(char * filename, char * required_properties) {
-  data_set = (DataSet *) malloc(sizeof(DataSet));
-  init_result = initWithPropertyString(filename, data_set, required_properties);
+PatternParser::PatternParser(char * filename, char * requiredProperties) {
+  dataSet = (DataSet *) malloc(sizeof(DataSet));
+  result = initWithPropertyString(filename, dataSet, requiredProperties);
+  workSet = createWorkset(dataSet);
+  maxInputLength = (dataSet->header.maxUserAgentLength + 1) * sizeof(char);
 }
 
 PatternParser::~PatternParser() {
+  if (workSet)
+    freeWorkset(workSet);
+  if (dataSet)
+    free(dataSet);
 }
 
 void PatternParser::Init(Handle<Object> target) {
@@ -60,17 +66,17 @@ void PatternParser::Init(Handle<Object> target) {
 NAN_METHOD(PatternParser::New) {
   NanScope();
   char *filename;
-  char *required_properties;
+  char *requiredProperties;
 
   v8::String::Utf8Value v8_filename(args[0]->ToString());
   v8::String::Utf8Value v8_properties(args[1]->ToString());
   filename = *v8_filename;
-  required_properties = *v8_properties;
+  requiredProperties = *v8_properties;
 
-  PatternParser *parser = new PatternParser(filename, required_properties);
+  PatternParser *parser = new PatternParser(filename, requiredProperties);
   parser->Wrap(args.This());
 
-  switch(parser->init_result) {
+  switch(parser->result) {
     case DATA_SET_INIT_STATUS_INSUFFICIENT_MEMORY:
       return NanThrowError("Insufficient memory");
     case DATA_SET_INIT_STATUS_CORRUPT_DATA:
@@ -91,15 +97,12 @@ NAN_METHOD(PatternParser::Parse) {
   Local<Object> result = NanNew<Object>();
   v8::String::Utf8Value v8_input(args[0]->ToString());
 
-  Workset *ws = createWorkset(parser->data_set);
-  uint max_input_len = (parser->data_set->header.maxUserAgentLength + 1) * sizeof(char);
-  uint v8__input_len = strlen(*v8_input);
-
-  if (v8__input_len > max_input_len) {
+  Workset *ws = parser->workSet;
+  if (strlen(*v8_input) > parser->maxInputLength) {
     return NanThrowError("Invalid useragent: too long");
   }
 
-  memcpy(ws->input, *v8_input, v8__input_len);
+  memcpy(ws->input, *v8_input, strlen(*v8_input));
   match(ws, ws->input);
 
   if (ws->profileCount > 0) {
@@ -159,7 +162,7 @@ NAN_METHOD(PatternParser::Parse) {
   } else {
     printf("null\n");
   }
-  freeWorkset(ws);
+  
   NanReturnValue(result);
 }
 

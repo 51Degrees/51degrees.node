@@ -56,8 +56,11 @@ public:
   static NAN_METHOD(Parse);
 
 private:
-  int init_result;
-  DataSet *data_set;
+  int result;
+  DataSet *dataSet;
+  Workset *workSet;
+
+  uint maxInputLength;
 };
 
 #endif
