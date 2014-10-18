@@ -31,7 +31,7 @@ var properties = require('./index').ALL_PROPERTIES;
 var userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36';
 
 test('pattern', function(t) {
-  var parser = new Parser('pattern', {properties: properties});
+  var parser = new Parser('51Degrees-Lite.dat', properties);
   var ret = parser.parse(userAgent);
   properties.forEach(function(property) {
     t.ok(typeof ret[property] !== undefined, property + '> ok');
@@ -45,7 +45,7 @@ test('pattern overflow', function(t) {
   for (var i=0; i<1000; i++) {
     ua[i] = 50;
   }
-  var parser = new Parser('pattern', {properties: properties});
+  var parser = new Parser('51Degrees-Lite', properties);
   var throwed = false;
   try { parser.parse(ua); }
   catch (e) {
@@ -56,7 +56,7 @@ test('pattern overflow', function(t) {
 });
 
 test('trie', function(t) {
-  var parser = new Parser('trie', {properties: properties});
+  var parser = new Parser('51Degrees-Lite.trie', properties);
   var ret = parser.parse(userAgent);
   properties.forEach(function(property) {
     t.ok(typeof ret[property] !== undefined, property + '> ok');

@@ -1,12 +1,20 @@
 var path = require('path');
 var fs = require('fs');
 var Parser = require('../index').Parser;
-var properties = ["DeviceType","HardwareFamily","HardwareModel","PlatformName","BrowserVendor","BrowserName","BrowserVersion","IsCrawler","PriceBand","HasTouchScreen"];
+var properties = [
+  "DeviceType",
+  "HardwareFamily",
+  "HardwareModel",
+  "PlatformName",
+  "BrowserVendor",
+  "BrowserName",
+  "BrowserVersion",
+  "IsCrawler",
+  "PriceBand",
+  "HasTouchScreen"
+];
 
-var psr = new Parser('pattern', {
-  properties: properties
-});
-
+var psr = new Parser('51Degrees-Lite.dat', properties);
 var ua_array = fs.readFileSync(path.join(__dirname, './ua.txt')).toString().split("\n");
 
 var doIt = function(array, cb) {
