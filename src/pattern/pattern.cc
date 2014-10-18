@@ -92,7 +92,14 @@ NAN_METHOD(PatternParser::Parse) {
   v8::String::Utf8Value v8_input(args[0]->ToString());
 
   Workset *ws = createWorkset(parser->data_set);
-  memcpy(ws->input, *v8_input, strlen(*v8_input));
+  uint max_input_len = (parser->data_set->header.maxUserAgentLength + 1) * sizeof(char);
+  uint v8__input_len = strlen(*v8_input);
+
+  if (v8__input_len > max_input_len) {
+    return NanThrowError("Invalid useragent: too long");
+  }
+
+  memcpy(ws->input, *v8_input, v8__input_len);
   match(ws, ws->input);
 
   if (ws->profileCount > 0) {
