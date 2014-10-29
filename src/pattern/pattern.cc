@@ -44,12 +44,9 @@ using namespace v8;
 PatternParser::PatternParser(char * filename, char * requiredProperties) {
   dataSet = (DataSet *) malloc(sizeof(DataSet));
   result = initWithPropertyString(filename, dataSet, requiredProperties);
-  workSet = createWorkset(dataSet);
 }
 
 PatternParser::~PatternParser() {
-  if (workSet)
-    freeWorkset(workSet);
   if (dataSet)
     free(dataSet);
 }
@@ -96,7 +93,7 @@ NAN_METHOD(PatternParser::Parse) {
   Local<Object> result = NanNew<Object>();
   v8::String::Utf8Value v8_input(args[0]->ToString());
 
-  Workset *ws = parser->workSet;
+  Workset *ws = createWorkset(parser->dataSet);
   int maxInputLength = (parser->dataSet->header.maxUserAgentLength + 1) * sizeof(char);
   if (strlen(*v8_input) > maxInputLength) {
     return NanThrowError("Invalid useragent: too long");
@@ -159,10 +156,11 @@ NAN_METHOD(PatternParser::Parse) {
     meta->Set(NanNew<v8::String>("signaturesCompared"), NanNew<v8::Integer>(ws->signaturesCompared));
     meta->Set(NanNew<v8::String>("closestSignatures"), NanNew<v8::Integer>(ws->closestSignatures));
     result->Set(NanNew<v8::String>("__meta__"), meta);
+    freeWorkset(ws);
   } else {
     printf("null\n");
   }
-  
+
   NanReturnValue(result);
 }
 
