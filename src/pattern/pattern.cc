@@ -51,7 +51,7 @@ PatternParser::~PatternParser() {
   if (dataSet)
     free(dataSet);
   if (workSet)
-    freeWorkset(ws);
+    freeWorkset(workSet);
 }
 
 void PatternParser::Init(Handle<Object> target) {
