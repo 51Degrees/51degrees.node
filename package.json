@@ -1,6 +1,6 @@
 {
   "name": "51degrees",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "51degrees c-sdk native bindings for nodejs",
   "main": "index.js",
   "scripts": {
