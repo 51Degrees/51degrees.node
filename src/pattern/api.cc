@@ -31,7 +31,7 @@ defined by the Mozilla Public License, v. 2.0.
 #include <node.h>
 #include <v8.h>
 #include <nan.h>
-#include "pattern.h"
+#include "api.h"
 
 #define BUFFER_LENGTH 50000
 
