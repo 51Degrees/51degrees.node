@@ -45,13 +45,27 @@ defined by the Mozilla Public License, v. 2.0.
 using namespace v8;
 using namespace node;
 
+//
+// TrieParser: the `ObjectWrap` for pattern
+//
 class TrieParser : public ObjectWrap {
 public:
+
+  // @constructor
+  // @filename: the database of file, must be *.trie
+  // @required_properties: specify properties that would be returned
   TrieParser(char * filename, char * required_properties);
+
+  // @destructor
   ~TrieParser();
 
+  // land this class to node.js runtime
   static void Init(Handle<Object> target);
+
+  // TrieParser.prototype.constructor
   static NAN_METHOD(New);
+
+  // TrieParser.prototype.parse
   static NAN_METHOD(Parse);
 
 private:

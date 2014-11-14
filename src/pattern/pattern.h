@@ -46,13 +46,28 @@ defined by the Mozilla Public License, v. 2.0.
 using namespace v8;
 using namespace node;
 
+//
+// PatternParser: the `ObjectWrap` for pattern
+//
 class PatternParser : public ObjectWrap {
 public:
+
+  // @constructor
+  // @filename: the database of file, must be *.dat
+  // @required_properties: specify properties that would be returned
   PatternParser(char * filename, char * required_properties);
+
+  // @destructor
+  // will release dataset, workset
   ~PatternParser();
 
+  // land this class to node.js runtime
   static void Init(Handle<Object> target);
+
+  // PatternParser.prototype.constructor
   static NAN_METHOD(New);
+
+  // PatternParser.prototype.parse
   static NAN_METHOD(Parse);
 
 private:

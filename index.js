@@ -65,6 +65,17 @@ function Parser(filename, properties) {
   if (!util.isArray(properties))
     throw new Error('properties must be an array');
 
+  // parse database type by extname
+  //  .trie -> trie
+  //  .dat  -> pattern
+  //
+  // but we support shortcut for pattern database file like:
+  // new Parser('51degrees-lite')
+  // will be parsed to '51degrees-lite.data' and treated as
+  // pattern database.
+  //
+  // if anyother extname, will throw error
+  //
   var extname = path.extname(filename);
   if (extname === '.trie') {
     this.method = 'trie';
@@ -83,6 +94,7 @@ function Parser(filename, properties) {
 Parser.prototype.parse = function(userAgent) {
   var res = this._parser.parse(userAgent);
   if (!res) return undefined;
+  // set `method` that user set in constructor
   res.method = this.method;
   return res;
 }

@@ -44,6 +44,7 @@ TrieParser::~TrieParser() {
 void TrieParser::Init(Handle<Object> target) {
   NanScope();
   Local<FunctionTemplate> t = NanNew<FunctionTemplate>(New);
+  // TODO(Yorkie): will remove
   t->InstanceTemplate()->SetInternalFieldCount(1);
   NODE_SET_PROTOTYPE_METHOD(t, "parse", Parse);
   target->Set(NanNew<String>("TrieParser"), t->GetFunction());
@@ -54,14 +55,17 @@ NAN_METHOD(TrieParser::New) {
   char *filename;
   char *required_properties;
 
+  // convert v8 objects to c/c++ types
   v8::String::Utf8Value v8_filename(args[0]->ToString());
   v8::String::Utf8Value v8_properties(args[1]->ToString());
   filename = *v8_filename;
   required_properties = *v8_properties;
 
+  // create new instance of C++ class TrieParser
   TrieParser *parser = new TrieParser(filename, required_properties);
   parser->Wrap(args.This());
 
+  // valid the database file content
   switch(parser->init_result) {
     case DATA_SET_INIT_STATUS_INSUFFICIENT_MEMORY:
       return NanThrowError("Insufficient memory");
@@ -79,6 +83,7 @@ NAN_METHOD(TrieParser::New) {
 NAN_METHOD(TrieParser::Parse) {
   NanScope();
 
+  // convert v8 objects to c/c++ types
   char *input = NULL;
   Local<Object> result = NanNew<Object>();
   v8::String::Utf8Value v8_input(args[0]->ToString());

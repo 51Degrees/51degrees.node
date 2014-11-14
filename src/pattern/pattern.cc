@@ -57,6 +57,7 @@ PatternParser::~PatternParser() {
 void PatternParser::Init(Handle<Object> target) {
   NanScope();
   Local<FunctionTemplate> t = NanNew<FunctionTemplate>(New);
+  // TODO(Yorkie): will remove
   t->InstanceTemplate()->SetInternalFieldCount(1);
   NODE_SET_PROTOTYPE_METHOD(t, "parse", Parse);
   target->Set(NanNew<v8::String>("PatternParser"), t->GetFunction());
@@ -67,14 +68,17 @@ NAN_METHOD(PatternParser::New) {
   char *filename;
   char *requiredProperties;
 
+  // convert v8 objects to c/c++ types
   v8::String::Utf8Value v8_filename(args[0]->ToString());
   v8::String::Utf8Value v8_properties(args[1]->ToString());
   filename = *v8_filename;
   requiredProperties = *v8_properties;
 
+  // create new instance of C++ class PatternParser
   PatternParser *parser = new PatternParser(filename, requiredProperties);
   parser->Wrap(args.This());
 
+  // valid the database file content
   switch(parser->result) {
     case DATA_SET_INIT_STATUS_INSUFFICIENT_MEMORY:
       return NanThrowError("Insufficient memory");
@@ -92,6 +96,7 @@ NAN_METHOD(PatternParser::New) {
 NAN_METHOD(PatternParser::Parse) {
   NanScope();
 
+  // convert v8 objects to c/c++ types
   PatternParser *parser = ObjectWrap::Unwrap<PatternParser>(args.This());
   Local<Object> result = NanNew<Object>();
   v8::String::Utf8Value v8_input(args[0]->ToString());
@@ -102,13 +107,15 @@ NAN_METHOD(PatternParser::Parse) {
     return NanThrowError("Invalid useragent: too long");
   }
 
+  // here we should initialize the ws->input by hand for avoiding
+  // memory incropted.
   memset(ws->input, 0, maxInputLength);
   memcpy(ws->input, *v8_input, strlen(*v8_input));
   match(ws, ws->input);
 
   if (ws->profileCount > 0) {
 
-    // build json
+    // here we fetch ID
     int32_t propertyIndex, valueIndex, profileIndex;
     int idSize = ws->profileCount * 5 + (ws->profileCount - 1) + 1;
     char *ids = (char*) malloc(idSize);
@@ -122,6 +129,7 @@ NAN_METHOD(PatternParser::Parse) {
     result->Set(NanNew<v8::String>("Id"), NanNew<v8::String>(ids));
     free(ids);
 
+    // build JSON
     for (propertyIndex = 0; 
       propertyIndex < ws->dataSet->requiredPropertyCount; 
       propertyIndex++) {
@@ -134,6 +142,7 @@ NAN_METHOD(PatternParser::Parse) {
 
       if (ws->valuesCount == 1) {
         const char *val = getValueName(ws->dataSet, *(ws->values));
+        // convert string to boolean
         if (strcmp(val, "True") == 0)
           result->Set(NanNew<v8::String>(key), NanTrue());
         else if (strcmp(val, "False") == 0)
