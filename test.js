@@ -26,9 +26,23 @@ defined by the Mozilla Public License, v. 2.0.
 */
 
 var test = require('tape');
+var crypto = require('crypto');
+var fs = require('fs');
+var path = require('path');
 var Parser = require('./index').Parser;
 var properties = require('./index').ALL_PROPERTIES;
 var userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36';
+var ua_src = fs.readFileSync(path.join(__dirname, './benchmark/ua.txt'));
+var ua_array = (ua_src + '').split('\n');
+
+test('constructor arguments valid', function(t) {
+  try {
+    new Parser('51Degrees-Lite.1');
+  } catch (e) {
+    t.equal(e.code, 'DB_NOT_FOUND');
+    t.end();
+  }
+});
 
 test('pattern', function(t) {
   var parser = new Parser('51Degrees-Lite.dat', properties);
@@ -37,6 +51,16 @@ test('pattern', function(t) {
     t.ok(typeof ret[property] !== undefined, property + '> ok');
   });
   t.equal(ret.method, 'pattern');
+  t.end();
+});
+
+test('trie', function(t) {
+  var parser = new Parser('51Degrees-Lite.trie', properties);
+  var ret = parser.parse(userAgent);
+  properties.forEach(function(property) {
+    t.ok(typeof ret[property] !== undefined, property + '> ok');
+  });
+  t.equal(ret.method, 'trie');
   t.end();
 });
 
@@ -55,12 +79,49 @@ test('pattern overflow', function(t) {
   t.end();
 });
 
-test('trie', function(t) {
-  var parser = new Parser('51Degrees-Lite.trie', properties);
-  var ret = parser.parse(userAgent);
-  properties.forEach(function(property) {
-    t.ok(typeof ret[property] !== undefined, property + '> ok');
+test('empty userAgent', function(t) {
+  var r;
+  var psr1 = new Parser('51Degrees-Lite', properties);
+  r = psr1.parse('');
+  t.equal(r.method, 'pattern');
+
+  var psr2 = new Parser('51Degrees-Lite.trie', properties);
+  r = psr2.parse('');
+  t.equal(r.method, 'trie');
+  t.end();
+});
+
+test('random userAgent', function(t) {
+  var r;
+  var ua = crypto.pseudoRandomBytes(10);
+  var psr1 = new Parser('51Degrees-Lite', properties);
+  r = psr1.parse(ua);
+  t.equal(r.method, 'pattern');
+
+  var psr2 = new Parser('51Degrees-Lite.trie', properties);
+  r = psr2.parse(ua);
+  t.equal(r.method, 'trie');
+  t.end();
+});
+
+test('memory leak at pattern', function(t) {
+  var cp1 = process.memoryUsage().rss / 1024 / 1024;
+  var psr1 = new Parser('51Degrees-Lite', properties);
+  ua_array.forEach(function(ua) {
+    psr1.parse(ua);
   });
-  t.equal(ret.method, 'trie');
+  var cp2 = process.memoryUsage().rss / 1024 / 1024;
+  t.ok(cp2 - cp1 <= 100, 'no memory leak at pattern');
+  t.end();
+});
+
+test('memory leak at trie', function(t) {
+  var cp1 = process.memoryUsage().rss / 1024 / 1024;
+  var psr1 = new Parser('51Degrees-Lite.trie', properties);
+  ua_array.forEach(function(ua) {
+    psr1.parse(ua);
+  });
+  var cp2 = process.memoryUsage().rss / 1024 / 1024;
+  t.ok(cp2 - cp1 <= 100, 'no memory leak at trie');
   t.end();
 });
