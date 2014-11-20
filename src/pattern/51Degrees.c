@@ -4,7 +4,7 @@
 #include <string.h>
 #include <limits.h>
 #include <math.h>
-#include "api.h"
+#include "51Degrees.h"
 
 /* *********************************************************************
  * This Source Code Form is copyright of 51Degrees Mobile Experts Limited.

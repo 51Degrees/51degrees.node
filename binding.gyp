@@ -4,8 +4,8 @@
       "target_name": "pattern",
       "sources": [
         "src/snprintf/snprintf.c",
-        "src/pattern/api.c",
-        "src/pattern/pattern.cc",
+        "src/pattern/51Degrees.c",
+        "src/pattern/api.cc",
       ],
       "cflags": [
         "-Wno-trigraphs"
@@ -21,8 +21,8 @@
       "target_name": "trie",
       "sources": [
         "src/snprintf/snprintf.c",
-        "src/trie/api.c",
-        "src/trie/trie.cc",
+        "src/trie/51Degrees.c",
+        "src/trie/api.cc",
       ],
       "cflags": [
         "-Wno-trigraphs"
