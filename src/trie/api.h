@@ -1,65 +1,76 @@
-/* *********************************************************************
- * This Source Code Form is copyright of 51Degrees Mobile Experts Limited.
- * Copyright © 2014 51Degrees Mobile Experts Limited, 5 Charlotte Close,
- * Caversham, Reading, Berkshire, United Kingdom RG4 7BY
- *
- * This Source Code Form is the subject of the following patent
- * applications, owned by 51Degrees Mobile Experts Limited of 5 Charlotte
- * Close, Caversham, Reading, Berkshire, United Kingdom RG4 7BY:
- * European Patent Application No. 13192291.6; and
- * United States Patent Application Nos. 14/085,223 and 14/085,301.
- *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0.
- *
- * If a copy of the MPL was not distributed with this file, You can obtain
- * one at http://mozilla.org/MPL/2.0/.
- *
- * This Source Code Form is “Incompatible With Secondary Licenses”, as
- * defined by the Mozilla Public License, v. 2.0.
- ********************************************************************** */
+/*
 
-#ifdef __cplusplus
-#define EXTERNAL extern "C"
-#else
-#define EXTERNAL
+This Source Code Form is copyright of Yorkshire, Inc.
+Copyright © 2014 Yorkshire, Inc,
+Guiyang, Guizhou, China
+
+This Source Code Form is copyright of 51Degrees Mobile Experts Limited.
+Copyright © 2014 51Degrees Mobile Experts Limited, 5 Charlotte Close,
+Caversham, Reading, Berkshire, United Kingdom RG4 7BY
+
+This Source Code Form is the subject of the following patent
+applications, owned by 51Degrees Mobile Experts Limited of 5 Charlotte
+Close, Caversham, Reading, Berkshire, United Kingdom RG4 7BY:
+European Patent Application No. 13192291.6; and
+United States Patent Application Nos. 14/085,223 and 14/085,301.
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0.
+
+If a copy of the MPL was not distributed with this file, You can obtain
+one at http://mozilla.org/MPL/2.0/.
+
+This Source Code Form is “Incompatible With Secondary Licenses”, as
+defined by the Mozilla Public License, v. 2.0.
+
+*/
+
+#ifndef MYOBJECT_H
+#define MYOBJECT_H
+
+#include <node.h>
+#include <v8.h>
+#include <nan.h>
+#include "51Degrees.h"
+
+#define BUFFER_LENGTH 50000
+
+#ifdef _MSC_VER
+#define _INTPTR 0
 #endif
 
-/* Used to provide the status of the data set initialisation */
-typedef enum e_DataSetInitStatus {
-    DATA_SET_INIT_STATUS_SUCCESS,
-    DATA_SET_INIT_STATUS_INSUFFICIENT_MEMORY,
-    DATA_SET_INIT_STATUS_CORRUPT_DATA,
-    DATA_SET_INIT_STATUS_INCORRECT_VERSION,
-    DATA_SET_INIT_STATUS_FILE_NOT_FOUND
-} DataSetInitStatus;
+#ifdef _MSC_FULL_VER
+#define snprintf _snprintf
+#endif
 
-// Initialises the memory using the file provided.
-EXTERNAL DataSetInitStatus init(char *fileName, char *properties);
+using namespace v8;
+using namespace node;
 
-// Returns the offset to a matching device based on the useragent provided.
-EXTERNAL int getDeviceOffset(char *userAgent);
+//
+// TrieParser: the `ObjectWrap` for pattern
+//
+class TrieParser : public ObjectWrap {
+public:
 
-// Returns the index of the property requested, or -1 if not available.
-EXTERNAL int getPropertyIndex(char *value);
+  // @constructor
+  // @filename: the database of file, must be *.trie
+  // @required_properties: specify properties that would be returned
+  TrieParser(char * filename, char * required_properties);
 
-// Takes the results of getDeviceOffset and getPropertyIndex to return a value.
-EXTERNAL char* getValue(int deviceOffset, int propertyIndex);
+  // @destructor
+  ~TrieParser();
 
-// Fress the memory.
-EXTERNAL void destroy();
+  // land this class to node.js runtime
+  static void Init(Handle<Object> target);
 
-// XXX(Yorkie): will request 51degrees c library
-EXTERNAL char* getValueFromDevice(int32_t* device, int32_t propertyIndex);
-EXTERNAL int32_t* getDevices();
-EXTERNAL int getRequiredPropertiesCount();
-EXTERNAL uint32_t* getRequiredProperties();
-EXTERNAL char ** getRequiredPropertiesNames();
+  // TrieParser.prototype.constructor
+  static NAN_METHOD(New);
 
-// Converts the device offset to a CSV string returning the number of
-// characters used.
-EXTERNAL int processDeviceCSV(int deviceOffset, char* result, int resultLength);
+  // TrieParser.prototype.parse
+  static NAN_METHOD(Parse);
 
-// Converts the device offset to a JSON string returning the number of
-// characters used.
-EXTERNAL int processDeviceJSON(int deviceOffset, char* result, int resultLength);
+private:
+  int init_result;
+};
+
+#endif

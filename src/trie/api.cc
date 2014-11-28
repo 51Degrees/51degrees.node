@@ -29,7 +29,6 @@ defined by the Mozilla Public License, v. 2.0.
 #include <stdio.h>
 #include <string.h>
 #include <v8.h>
-#include "trie.h"
 #include "api.h"
 
 using namespace v8;

@@ -31,7 +31,7 @@ defined by the Mozilla Public License, v. 2.0.
 #include <node.h>
 #include <v8.h>
 #include <nan.h>
-#include "pattern.h"
+#include "api.h"
 
 #define BUFFER_LENGTH 50000
 
@@ -170,7 +170,7 @@ NAN_METHOD(PatternParser::Parse) {
     meta->Set(NanNew<v8::String>("closestSignatures"), NanNew<v8::Integer>(ws->closestSignatures));
     result->Set(NanNew<v8::String>("__meta__"), meta);
   } else {
-    printf("null\n");
+    NanFalse();
   }
 
   NanReturnValue(result);
