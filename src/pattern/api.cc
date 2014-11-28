@@ -170,7 +170,7 @@ NAN_METHOD(PatternParser::Parse) {
     meta->Set(NanNew<v8::String>("closestSignatures"), NanNew<v8::Integer>(ws->closestSignatures));
     result->Set(NanNew<v8::String>("__meta__"), meta);
   } else {
-    printf("null\n");
+    NanFalse();
   }
 
   NanReturnValue(result);

@@ -99,7 +99,8 @@ function Parser(filename, properties) {
 
 Parser.prototype.parse = function(userAgent) {
   var res = this._parser.parse(userAgent);
-  if (!res) return undefined;
+  if (!res)
+    throw new Error('Critical error. Number of profiles for this match is 0. Please notify support');
   // set `method` that user set in constructor
   res.method = this.method;
   return res;
