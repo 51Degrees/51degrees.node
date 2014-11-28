@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "csv": "^0.4.0",
+    "debug": "^2.1.0",
     "microtime": "^1.0.1",
     "tape": "^2.14.0"
   }

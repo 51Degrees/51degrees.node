@@ -27,6 +27,7 @@ defined by the Mozilla Public License, v. 2.0.
 
 var util = require('util');
 var path = require('path');
+var debug = require('debug')('51degrees');
 var TrieParser = require('./build/Release/trie.node').TrieParser;
 var PatternParser = require('./build/Release/pattern.node').PatternParser;
 var defaultProperties = [
