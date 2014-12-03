@@ -50,6 +50,14 @@ var extensions = {
   'trie': '.trie'
 };
 
+var env = process.env.NODE_ENV;
+var debug;
+if (env === 'test' || env === 'debug') {
+  debug = require('debug')('51degrees');
+} else {
+  debug = function () {};
+}
+
 function Parser(filename, properties) {
   if (!(this instanceof Parser))
     return new Parser(name, options);
