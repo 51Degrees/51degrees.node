@@ -20,11 +20,11 @@
   },
   "homepage": "https://github.com/yorkie/51degrees.node",
   "dependencies": {
-    "nan": "^1.3.0"
+    "nan": "^1.3.0",
+    "debug": "^2.1.0"
   },
   "devDependencies": {
     "csv": "^0.4.0",
-    "debug": "^2.1.0",
     "microtime": "^1.0.1",
     "tape": "^2.14.0"
   }
