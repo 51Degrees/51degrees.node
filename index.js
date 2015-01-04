@@ -28,6 +28,7 @@ defined by the Mozilla Public License, v. 2.0.
 var util = require('util');
 var path = require('path');
 var debug = require('debug')('51degrees');
+var update = require('./update');
 var TrieParser = require('./build/Release/trie.node').TrieParser;
 var PatternParser = require('./build/Release/pattern.node').PatternParser;
 var defaultProperties = [
@@ -50,9 +51,9 @@ var extensions = {
   'trie': '.trie'
 };
 
-function Parser(filename, properties) {
+function Parser(filename, properties, options) {
   if (!(this instanceof Parser))
-    return new Parser(name, options);
+    return new Parser(filename, properties, options);
   
   if (typeof filename !== 'string') {
     var err = new Error('failed to read file: ' + filename);
@@ -80,20 +81,32 @@ function Parser(filename, properties) {
   //
   // if anyother extname, will throw error
   //
+  var options = options || {};
   var extname = path.extname(filename);
+  var props = properties.join(',');
   if (extname === '.trie') {
     this.method = 'trie';
-    this._parser = new TrieParser(filename, properties.join(','));
+    this._parser = new TrieParser(filename, props);
   } else if (extname === '.dat') {
     this.method = 'pattern';
-    this._parser = new PatternParser(filename, properties.join(','));
+    this._parser = new PatternParser(filename, props);
+    autoUpdate(filename, props, options);
   } else if (extname === '') {
     this.method = 'pattern';
-    this._parser = new PatternParser(filename + '.dat', properties.join(','));
+    this._parser = new PatternParser(filename + '.dat', props);
+    autoUpdate(filename + '.dat', props, options);
   } else {
     var err = new Error('failed to read file: ' + filename);
     err.code = 'DB_NOT_FOUND';
     throw err;
+  }
+
+  var self = this;
+  function autoUpdate(filename, props, options) {
+    if (!options.autoUpdate) return;
+    setInterval(function () {
+      self.update(filename, props, options.key, options.onupdated);
+    }, options.inteval || 30 * 60 * 1000);
   }
 }
 
@@ -104,7 +117,25 @@ Parser.prototype.parse = function(userAgent) {
   // set `method` that user set in constructor
   res.method = this.method;
   return res;
-}
+};
+
+Parser.prototype.update = function(filename, props, key, onupdated) {
+  var self = this;
+  if (!key)
+    throw new Error('key required');
+  update(key, filename, function onresponse(updated) {
+    if (updated) {
+      try {
+        var org = self._parser;
+        var newParser = new PatternParser(filename, props);
+        delete self._parser;
+        self._parser = newParser;
+        debug('updated successfully');
+      } catch (err) {}
+    }
+    if (typeof onupdated === 'function') onupdated(updated);
+  });
+};
 
 function capitaliseFirstLetter(str) {
   return str.charAt(0).toLowerCase() + str.slice(1);

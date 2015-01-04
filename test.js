@@ -31,6 +31,8 @@ var fs = require('fs');
 var path = require('path');
 var Parser = require('./index').Parser;
 var properties = require('./index').ALL_PROPERTIES;
+var configmock = require('httpmocker').config;
+
 var userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36';
 var ua_src = fs.readFileSync(path.join(__dirname, './benchmark/ua.txt'));
 var ua_array = (ua_src + '').split('\n');
@@ -102,6 +104,70 @@ test('random userAgent', function(t) {
   r = psr2.parse(ua);
   t.equal(r.method, 'trie');
   t.end();
+});
+
+test('update with 200', function(t) {
+  var update = require('./update');
+  configmock({
+    'https://51degrees.com/Products/': {
+      statusCode: 200,
+      headers: {'content-type': 'text/plain'},
+      body: 'abcdefg'
+    }
+  });
+  update('license key', 'test.update', function(updated) {
+    t.equal(updated, true);
+    var d = fs.readFileSync('test.update').toString();
+    t.equal(d, 'abcdefg');
+    t.end();
+    fs.unlinkSync('test.update');
+  });
+});
+
+test('update with 403', function(t) {
+  var update = require('./update');
+  configmock({
+    'https://51degrees.com/Products/': {
+      statusCode: 403
+    }
+  });
+  update('license key', 'test.update', function(updated) {
+    t.equal(updated, false);
+    t.end();
+  });
+});
+
+test('auto update', function(t) {
+  var sinon = require('sinon');
+  var clock = sinon.useFakeTimers();
+  var orgSrc = fs.readFileSync('51Degrees-Lite.dat');
+
+  configmock({
+    'https://51degrees.com/Products/': {
+      statusCode: 200,
+      headers: {'content-type': 'text/plain'},
+      body: 'abcdefg'
+    }
+  });
+
+  psr1 = new Parser('51Degrees-Lite', properties, {
+    autoUpdate: true,
+    key: 'license key',
+    onupdated: onupdated
+  });
+
+  clock.tick(30*60*1000);
+
+  function onupdated(updated) {
+    t.equal(fs.readFileSync('51Degrees-Lite.dat').length, 7);
+    end();
+  }
+
+  function end() {
+    fs.writeFileSync('51Degrees-Lite.dat', orgSrc);
+    clock.restore();
+    t.end();
+  }
 });
 
 test('memory leak at pattern', function(t) {
