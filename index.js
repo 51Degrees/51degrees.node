@@ -106,7 +106,7 @@ function Parser(filename, properties, options) {
     if (!options.autoUpdate) return;
     setInterval(function () {
       self.update(filename, props, options.key, options.onupdated);
-    }, options.inteval || 30 * 60 * 1000);
+    }, options.interval || 30 * 60 * 1000);
   }
 }
 
