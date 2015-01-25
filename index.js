@@ -123,6 +123,7 @@ Parser.prototype.update = function(filename, props, key, onupdated) {
   var self = this;
   if (!key)
     throw new Error('key required');
+
   update(key, filename, function onresponse(updated) {
     if (updated) {
       try {
