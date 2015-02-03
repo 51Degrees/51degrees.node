@@ -111,7 +111,10 @@ test('update with 200', function(t) {
   configmock({
     'https://51degrees.com/Products/': {
       statusCode: 200,
-      headers: {'content-type': 'text/plain'},
+      headers: {
+        'content-type': 'text/plain',
+        'content-md5': '7ac66c0f148de9519b8bd264312c4d64'
+      },
       body: 'abcdefg'
     }
   });
@@ -145,7 +148,10 @@ test('auto update', function(t) {
   configmock({
     'https://51degrees.com/Products/': {
       statusCode: 200,
-      headers: {'content-type': 'text/plain'},
+      headers: {
+        'content-type': 'text/plain',
+        'content-md5': '7ac66c0f148de9519b8bd264312c4d64'
+      },
       body: 'abcdefg'
     }
   });
