@@ -1,6 +1,7 @@
 
 
 var fs = require('fs');
+var zlib = require('zlib');
 var path = require('path');
 var util = require('util');
 var crypto = require('crypto');
@@ -43,7 +44,7 @@ function update(key, filename, callback) {
                 resume(filename, callback);
             });
           });
-          response.pipe(hs).pipe(ws);
+          response.pipe(hs).pipe(zlib.createGunzip()).pipe(ws);
         });
       } else {
         callback(false);
