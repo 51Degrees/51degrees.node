@@ -36,12 +36,15 @@ function update(key, filename, callback) {
           var hs = new HashStream('md5');
           hs.on('finish', function() {
             // check md5 match
-            var isValid = response.headers['content-md5'] === hs.digest('hex');
+            var fmd5 = hs.digest('hex');
+            var isValid = (response.headers['content-md5'] === fmd5);
             ws.on('finish', function() {
-              if (isValid)
-                cleanBackup(filename), callback(true)
-              else
+              if (isValid) {
+                cleanBackup(filename);
+                callback(true);
+              } else {
                 resume(filename, callback);
+              }
             });
           });
           response.pipe(hs).pipe(zlib.createGunzip()).pipe(ws);

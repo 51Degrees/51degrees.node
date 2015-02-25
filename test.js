@@ -28,6 +28,7 @@ defined by the Mozilla Public License, v. 2.0.
 var test = require('tape');
 var crypto = require('crypto');
 var fs = require('fs');
+var zlib = require('zlib');
 var path = require('path');
 var Parser = require('./index').Parser;
 var properties = require('./index').ALL_PROPERTIES;
@@ -108,22 +109,24 @@ test('random userAgent', function(t) {
 
 test('update with 200', function(t) {
   var update = require('./update');
-  configmock({
-    'https://51degrees.com/Products/': {
-      statusCode: 200,
-      headers: {
-        'content-type': 'text/plain',
-        'content-md5': '7ac66c0f148de9519b8bd264312c4d64'
-      },
-      body: 'abcdefg'
-    }
-  });
-  update('license key', 'test.update', function(updated) {
-    t.equal(updated, true);
-    var d = fs.readFileSync('test.update').toString();
-    t.equal(d, 'abcdefg');
-    t.end();
-    fs.unlinkSync('test.update');
+  zlib.gzip(new Buffer('abcdefg', 'utf8'), function(err, data) {
+    configmock({
+      'https://51degrees.com/Products/': {
+        statusCode: 200,
+        headers: {
+          'content-type': 'text/plain',
+          'content-md5': '519fdca9541cfdfbd905e3a92ec2f8ed'
+        },
+        body: data
+      }
+    });
+    update('license key', 'test.update', function(updated) {
+      t.equal(updated, true);
+      var d = fs.readFileSync('test.update').toString();
+      t.equal(d, 'abcdefg');
+      t.end();
+      fs.unlinkSync('test.update');
+    });
   });
 });
 
@@ -145,24 +148,26 @@ test('auto update', function(t) {
   var clock = sinon.useFakeTimers();
   var orgSrc = fs.readFileSync('51Degrees-Lite.dat');
 
-  configmock({
-    'https://51degrees.com/Products/': {
-      statusCode: 200,
-      headers: {
-        'content-type': 'text/plain',
-        'content-md5': '7ac66c0f148de9519b8bd264312c4d64'
-      },
-      body: 'abcdefg'
-    }
-  });
+  zlib.gzip(new Buffer('abcdefg', 'utf8'), function(err, data) {
+    configmock({
+      'https://51degrees.com/Products/': {
+        statusCode: 200,
+        headers: {
+          'content-type': 'text/plain',
+          'content-md5': '519fdca9541cfdfbd905e3a92ec2f8ed'
+        },
+        body: data
+      }
+    });
+    
+    psr1 = new Parser('51Degrees-Lite', properties, {
+      autoUpdate: true,
+      key: 'license key',
+      onupdated: onupdated
+    });
 
-  psr1 = new Parser('51Degrees-Lite', properties, {
-    autoUpdate: true,
-    key: 'license key',
-    onupdated: onupdated
+    clock.tick(30*60*1000);
   });
-
-  clock.tick(30*60*1000);
 
   function onupdated(updated) {
     t.equal(fs.readFileSync('51Degrees-Lite.dat').length, 7);
