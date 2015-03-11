@@ -2,6 +2,9 @@
 51degrees.node
 ==============
 
+[![Join the chat at https://gitter.im/51Degreesmobi/51degrees.node](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/51Degreesmobi/51degrees.node?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/yorkie/51degrees.node?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 51degrees c-sdk native bindings for nodejs, it helps you detect devices from `userAgent` in high performance.
 
 [![NPM](https://nodei.co/npm/51degrees.png?stars&downloads)](https://nodei.co/npm/51degrees/)
@@ -9,16 +12,26 @@
 
 Windows        | Mac/Linux   
 -------------- | ------------
-[![Build status](https://ci.appveyor.com/api/projects/status/m1nwwmospqiipyeu?svg=true)](https://ci.appveyor.com/project/yorkie/51degrees-node) | [![Build Status](https://travis-ci.org/yorkie/51degrees.node.svg?branch=master)](https://travis-ci.org/yorkie/51degrees.node)
+[![Build status](https://ci.appveyor.com/api/projects/status/m1nwwmospqiipyeu?svg=true)](https://ci.appveyor.com/project/yorkie/51degrees-node) | [![Build Status](https://travis-ci.org/51Degreesmobi/51degrees.node.svg?branch=master)](https://travis-ci.org/51Degreesmobi/51degrees.node)
 
 
 ### API
 
-##### `.Parse(filename[, properties])`
+##### `.Parse(filename[, properties, options])`
 
 * `filename` {String} your 51degrees data, lite or premium.
 
-* `options` {Array} optional, required properties
+* `properties` {Array} optional, required properties
+
+* `options` {Object}
+
+* `options.autoUpdate` {Boolean} enable/disable `autoUpdate` feature
+
+* `options.key` {String} auto-update requires a licesen key from 51Degrees
+
+* `options.interval` {Integer}, default value 30 * 60 * 1000 (half hours)
+
+* `options.onupdated` {Function} if auto updated, you will get call at this function
 
 for more information, you could move to [51degrees documentation](https://51degrees.com/Support/Documentation)
 
@@ -37,6 +50,17 @@ var userAgent = '...'; // your userAgent in any clients(browser/ios/android)
 var ret = psr.parse(userAgent);
 console.log(ret);
 ```
+
+##### Create an auto-updated pattern parser
+
+```js
+var psr = new Parser('51Degrees-Lite.dat', [], {
+  autoUpdate: true,
+  key: 'your license key'
+});
+```
+
+**Note**: this feature only is used at **pattern** data.
 
 After the above program, you will get:
 
