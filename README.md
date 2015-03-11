@@ -15,11 +15,21 @@ Windows        | Mac/Linux
 
 ### API
 
-##### `.Parse(filename[, properties])`
+##### `.Parse(filename[, properties, options])`
 
 * `filename` {String} your 51degrees data, lite or premium.
 
-* `options` {Array} optional, required properties
+* `properties` {Array} optional, required properties
+
+* `options` {Object}
+
+* `options.autoUpdate` {Boolean} enable/disable `autoUpdate` feature
+
+* `options.key` {String} auto-update requires a licesen key from 51Degrees
+
+* `options.interval` {Integer}, default value 30 * 60 * 1000 (half hours)
+
+* `options.onupdated` {Function} if auto updated, you will get call at this function
 
 for more information, you could move to [51degrees documentation](https://51degrees.com/Support/Documentation)
 
@@ -38,6 +48,17 @@ var userAgent = '...'; // your userAgent in any clients(browser/ios/android)
 var ret = psr.parse(userAgent);
 console.log(ret);
 ```
+
+##### Create an auto-updated pattern parser
+
+```js
+var psr = new Parser('51Degrees-Lite.dat', [], {
+  autoUpdate: true,
+  key: 'your license key'
+});
+```
+
+**Note**: this feature only is used at **pattern** data.
 
 After the above program, you will get:
 
