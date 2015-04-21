@@ -42,16 +42,16 @@ defined by the Mozilla Public License, v. 2.0.
 using namespace v8;
 
 PatternParser::PatternParser(char * filename, char * requiredProperties) {
-  dataSet = (DataSet *) malloc(sizeof(DataSet));
-  result = initWithPropertyString(filename, dataSet, requiredProperties);
-  workSet = createWorkset(dataSet);
+  dataSet = (fiftyoneDegreesDataSet *) malloc(sizeof(fiftyoneDegreesDataSet));
+  result = fiftyoneDegreesInitWithPropertyString(filename, dataSet, requiredProperties);
+  workSet = fiftyoneDegreesCreateWorkset(dataSet);
 }
 
 PatternParser::~PatternParser() {
   if (dataSet)
     free(dataSet);
   if (workSet)
-    freeWorkset(workSet);
+    fiftyoneDegreesFreeWorkset(workSet);
 }
 
 void PatternParser::Init(Handle<Object> target) {
@@ -101,7 +101,7 @@ NAN_METHOD(PatternParser::Parse) {
   Local<Object> result = NanNew<Object>();
   v8::String::Utf8Value v8_input(args[0]->ToString());
 
-  Workset *ws = parser->workSet;
+  fiftyoneDegreesWorkset *ws = parser->workSet;
   int maxInputLength = (parser->dataSet->header.maxUserAgentLength + 1) * sizeof(char);
   if (strlen(*v8_input) > maxInputLength) {
     return NanThrowError("Invalid useragent: too long");
@@ -111,7 +111,7 @@ NAN_METHOD(PatternParser::Parse) {
   // memory incropted.
   memset(ws->input, 0, maxInputLength);
   memcpy(ws->input, *v8_input, strlen(*v8_input));
-  match(ws, ws->input);
+  fiftyoneDegreesMatch(ws, ws->input);
 
   if (ws->profileCount > 0) {
 
@@ -134,14 +134,14 @@ NAN_METHOD(PatternParser::Parse) {
       propertyIndex < ws->dataSet->requiredPropertyCount; 
       propertyIndex++) {
 
-      if (setValues(ws, propertyIndex) <= 0)
+      if (fiftyoneDegreesSetValues(ws, propertyIndex) <= 0)
         break;
 
-      const char *key = getPropertyName(ws->dataSet, 
+      const char *key = fiftyoneDegreesGetPropertyName(ws->dataSet, 
         *(ws->dataSet->requiredProperties + propertyIndex));
 
       if (ws->valuesCount == 1) {
-        const char *val = getValueName(ws->dataSet, *(ws->values));
+        const char *val = fiftyoneDegreesGetValueName(ws->dataSet, *(ws->values));
         // convert string to boolean
         if (strcmp(val, "True") == 0)
           result->Set(NanNew<v8::String>(key), NanTrue());
@@ -152,7 +152,7 @@ NAN_METHOD(PatternParser::Parse) {
       } else {
         Local<Array> vals = NanNew<Array>(ws->valuesCount - 1);
         for (valueIndex = 0; valueIndex < ws->valuesCount; valueIndex++) {
-          const char *val = getValueName(ws->dataSet, *(ws->values + valueIndex));
+          const char *val = fiftyoneDegreesGetValueName(ws->dataSet, *(ws->values + valueIndex));
           vals->Set(valueIndex, NanNew<v8::String>(val));
         }
         result->Set(NanNew<v8::String>(key), vals);

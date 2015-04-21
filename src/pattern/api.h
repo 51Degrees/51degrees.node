@@ -72,8 +72,8 @@ public:
 
 private:
   int result;
-  DataSet *dataSet;
-  Workset *workSet;
+  fiftyoneDegreesDataSet *dataSet;
+  fiftyoneDegreesWorkset *workSet;
 };
 
 #endif
