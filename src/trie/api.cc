@@ -34,7 +34,7 @@ defined by the Mozilla Public License, v. 2.0.
 using namespace v8;
 
 TrieParser::TrieParser(char * filename, char * required_properties) {
-  init_result = init(filename, required_properties);
+  init_result = fiftyoneDegreesInit(filename, required_properties);
 }
 
 TrieParser::~TrieParser() {
@@ -88,15 +88,14 @@ NAN_METHOD(TrieParser::Parse) {
   v8::String::Utf8Value v8_input(args[0]->ToString());
   input = *v8_input;
   
-  int32_t* device = getDevices() + getDeviceOffset(input);
+  int device = fiftyoneDegreesGetDeviceOffset(input);
   int index;
-  int propCount = getRequiredPropertiesCount();
-  uint32_t *props = getRequiredProperties();
-  char **propNames = getRequiredPropertiesNames();
+  int propCount = fiftyoneDegreesGetRequiredPropertiesCount();
+  char **propNames = fiftyoneDegreesGetRequiredPropertiesNames();
 
   for (index = 0; index < propCount; index++) {
     char *key = *(propNames + index);
-    char *val = getValueFromDevice(device, *(props + index));
+    char *val = fiftyoneDegreesGetValue(device, index);
     if (strcmp(val, "True") == 0)
       result->Set(NanNew<v8::String>(key), NanTrue());
     else if (strcmp(val, "False") == 0)
