@@ -95,7 +95,8 @@ NAN_METHOD(TrieParser::Parse) {
 
   for (index = 0; index < propCount; index++) {
     char *key = *(propNames + index);
-    char *val = fiftyoneDegreesGetValue(device, index);
+    int propIndex = fiftyoneDegreesGetPropertyIndex(key);
+    char *val = fiftyoneDegreesGetValue(device, propIndex);
     if (strcmp(val, "True") == 0)
       result->Set(NanNew<v8::String>(key), NanTrue());
     else if (strcmp(val, "False") == 0)
